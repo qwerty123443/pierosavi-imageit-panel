@@ -249,9 +249,7 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
             function render() {
               if (!ctrl.panel.sensors || ctrl.panel.bgimage === '') {
                 return;
-              } // Replace possible variables in image URL
-              // ctrl.panel.realbgimage = ctrl.templateSrv.replace(ctrl.panel.bgimage);
-
+              }
 
               var imageWidth = image.offsetWidth;
               var imageHeight = image.offsetHeight;
@@ -268,9 +266,9 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
                 return operator.name;
               });
 
-              ctrl.panel.realbgimage = "data:image/png;base64, " + ("camera.img" in metricMap ? metricMap["camera.img"].value : "");
-              console.log("Updated bgImage. is now: ");
-              console.log(ctrl.panel.realbgimage);
+              ctrl.panel.realbgimage = "data:image/png;base64, " + ("camera.img" in metricMap ? metricMap["camera.img"].value : ""); // console.log("Updated bgImage. is now: ");
+              // console.log(ctrl.panel.realbgimage);
+
               var _iteratorNormalCompletion = true;
               var _didIteratorError = false;
               var _iteratorError = undefined;
