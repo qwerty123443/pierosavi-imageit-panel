@@ -39,8 +39,6 @@ const panelDefaults = {
     sensors: [],
     templateSrv: null,
     sizecoefficient: 20,
-    // uncache is a random number added to the img url to refresh it
-    uncache: 0,
     islocked: false,
     islockvisible: true
 };
@@ -58,8 +56,6 @@ const mappingOperators = [{
     operator: '<',
     fn: isLessThan
 }];
-
-let isTheFirstRender = true;
 
 export class ImageItCtrl extends MetricsPanelCtrl {
     constructor($scope, $injector, $sce, templateSrv) {
@@ -83,18 +79,7 @@ export class ImageItCtrl extends MetricsPanelCtrl {
             });
         }
 
-        if (!isTheFirstRender) {
-            this.refreshImage();
-        } else {
-            isTheFirstRender = false;
-        }
-
-
         this.render();
-    }
-
-    refreshImage() {
-        this.panel.uncache = Math.random();
     }
 
     deleteSensor(index) {
@@ -160,15 +145,16 @@ export class ImageItCtrl extends MetricsPanelCtrl {
                 return;
             }
 
-            // Replace possible variables in image URL
-            ctrl.panel.realbgimage = ctrl.templateSrv.replace(ctrl.panel.bgimage);
-
             const imageWidth = image.offsetWidth;
             const imageHeight = image.offsetHeight;
 
             const metricMap = _.keyBy(ctrl.panel.metricValues, value => value.name);
             const valueMappingsMap = _.keyBy(ctrl.panel.valueMappings, mapping => mapping.id);
             const mappingOperatorsMap = _.keyBy(mappingOperators, operator => operator.name);
+
+            ctrl.panel.realbgimage = "data:image/png;base64, " + ("camera.img" in metricMap ? metricMap["camera.img"].value : "");
+            // console.log("Updated bgImage. is now: ");
+            // console.log(ctrl.panel.realbgimage);
 
             for (const sensor of ctrl.panel.sensors) {
                 _.defaults(sensor, new Sensor());
@@ -282,7 +268,7 @@ export class ImageItCtrl extends MetricsPanelCtrl {
                     },
                     autoScroll: true,
                     onmove: function (event) {
-                        const {target} = event;
+                        const { target } = event;
                         // keep the dragged position in the data-x/data-y attributes
                         const datax = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
                         const datay = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
@@ -297,7 +283,7 @@ export class ImageItCtrl extends MetricsPanelCtrl {
                         target.setAttribute('data-y', datay);
                     },
                     onend: function (event) {
-                        const {target} = event;
+                        const { target } = event;
 
                         const imageHeight = image.offsetHeight;
                         const imageWidth = image.offsetWidth;
@@ -388,7 +374,7 @@ export class ImageItCtrl extends MetricsPanelCtrl {
     }
 
     setBackgroundImage() {
-        this.panel.realbgimage = this.templateSrv.replace(this.panel.bgimage);
+        // this.panel.realbgimage = this.templateSrv.replace(this.panel.bgimage);
         this.render();
     }
 }

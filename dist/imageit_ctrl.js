@@ -3,7 +3,7 @@
 System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils/kbn"], function (_export, _context) {
   "use strict";
 
-  var _, MetricsPanelCtrl, kbn, copyProps, panelDefaults, mappingOperators, isTheFirstRender, ImageItCtrl;
+  var _, MetricsPanelCtrl, kbn, copyProps, panelDefaults, mappingOperators, ImageItCtrl;
 
   function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -120,8 +120,6 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
         sensors: [],
         templateSrv: null,
         sizecoefficient: 20,
-        // uncache is a random number added to the img url to refresh it
-        uncache: 0,
         islocked: false,
         islockvisible: true
       };
@@ -138,7 +136,6 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
         operator: '<',
         fn: isLessThan
       }];
-      isTheFirstRender = true;
 
       _export("ImageItCtrl", ImageItCtrl =
       /*#__PURE__*/
@@ -181,18 +178,7 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
               });
             }
 
-            if (!isTheFirstRender) {
-              this.refreshImage();
-            } else {
-              isTheFirstRender = false;
-            }
-
             this.render();
-          }
-        }, {
-          key: "refreshImage",
-          value: function refreshImage() {
-            this.panel.uncache = Math.random();
           }
         }, {
           key: "deleteSensor",
@@ -264,9 +250,9 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
               if (!ctrl.panel.sensors || ctrl.panel.bgimage === '') {
                 return;
               } // Replace possible variables in image URL
+              // ctrl.panel.realbgimage = ctrl.templateSrv.replace(ctrl.panel.bgimage);
 
 
-              ctrl.panel.realbgimage = ctrl.templateSrv.replace(ctrl.panel.bgimage);
               var imageWidth = image.offsetWidth;
               var imageHeight = image.offsetHeight;
 
@@ -282,6 +268,9 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
                 return operator.name;
               });
 
+              ctrl.panel.realbgimage = "data:image/png;base64, " + ("camera.img" in metricMap ? metricMap["camera.img"].value : "");
+              console.log("Updated bgImage. is now: ");
+              console.log(ctrl.panel.realbgimage);
               var _iteratorNormalCompletion = true;
               var _didIteratorError = false;
               var _iteratorError = undefined;
@@ -550,7 +539,7 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
         }, {
           key: "setBackgroundImage",
           value: function setBackgroundImage() {
-            this.panel.realbgimage = this.templateSrv.replace(this.panel.bgimage);
+            // this.panel.realbgimage = this.templateSrv.replace(this.panel.bgimage);
             this.render();
           }
         }]);
