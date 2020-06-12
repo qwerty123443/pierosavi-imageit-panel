@@ -232,6 +232,13 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
             this.addEditorTab('Sensor', 'public/plugins/pierosavi-imageit-panel/editor.html', 2);
             this.addEditorTab('Value Mapping', 'public/plugins/pierosavi-imageit-panel/mappings.html', 3);
             this.unitFormats = kbn.getUnitFormats();
+            this.unitFormats.push({
+              text: "String",
+              submenu: [{
+                text: "String",
+                value: "String"
+              }]
+            });
             this.render();
           }
         }, {
@@ -239,19 +246,6 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
           value: function toggleBlock() {
             this.panel.islocked = !this.panel.islocked;
             this.render();
-          }
-        }, {
-          key: "makeSelectionList",
-          value: function makeSelectionList() {
-            var _list;
-
-            _list.push({
-              "name": "Custom URL"
-            });
-
-            _list.push(angular.copy(metricMap));
-
-            return _list;
           }
         }, {
           key: "link",
@@ -401,8 +395,12 @@ System.register(["lodash", "app/plugins/sdk", "./libs/interact", "app/core/utils
                   if (metricValue === undefined) {
                     sensor.valueFormatted = 'Select a sensor metric';
                   } else {
-                    var formatFunc = kbn.valueFormats[sensor.unitFormat];
-                    sensor.valueFormatted = formatFunc(metricValue, sensor.decimals);
+                    if (sensor.unitFormat === "String") {
+                      sensor.valueFormatted = metricValue;
+                    } else {
+                      var formatFunc = kbn.valueFormats[sensor.unitFormat];
+                      sensor.valueFormatted = formatFunc(metricValue, sensor.decimals);
+                    }
                   }
                 }
               } catch (err) {

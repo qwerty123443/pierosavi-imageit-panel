@@ -128,19 +128,13 @@ export class ImageItCtrl extends MetricsPanelCtrl {
         this.addEditorTab('Sensor', 'public/plugins/pierosavi-imageit-panel/editor.html', 2);
         this.addEditorTab('Value Mapping', 'public/plugins/pierosavi-imageit-panel/mappings.html', 3);
         this.unitFormats = kbn.getUnitFormats();
+        this.unitFormats.push({ text: "String", submenu: [{ text: "String", value: "String" }] })
         this.render();
     }
 
     toggleBlock() {
         this.panel.islocked = !this.panel.islocked;
         this.render();
-    }
-
-    makeSelectionList() {
-        let _list;
-        _list.push({ "name": "Custom URL" });
-        _list.push(angular.copy(metricMap))
-        return _list;
     }
 
     link(scope, elem, attrs, ctrl) {
@@ -242,8 +236,13 @@ export class ImageItCtrl extends MetricsPanelCtrl {
                 if (metricValue === undefined) {
                     sensor.valueFormatted = 'Select a sensor metric';
                 } else {
-                    const formatFunc = kbn.valueFormats[sensor.unitFormat];
-                    sensor.valueFormatted = formatFunc(metricValue, sensor.decimals);
+                    if (sensor.unitFormat === "String") {
+                        sensor.valueFormatted = metricValue;
+                    } else {
+                        const formatFunc = kbn.valueFormats[sensor.unitFormat];
+                        sensor.valueFormatted = formatFunc(metricValue, sensor.decimals);
+
+                    }
                 }
             }
 
